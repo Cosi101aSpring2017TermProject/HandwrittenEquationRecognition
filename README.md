@@ -1,1 +1,0 @@
-# HandwrittenEquationRecognition
