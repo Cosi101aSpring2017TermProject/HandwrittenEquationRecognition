@@ -7,6 +7,7 @@ import sys
 import numpy
 
 #fffffff
+#rrrrrr
 
 class ClassificationDictionary:
 
