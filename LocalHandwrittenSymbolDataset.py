@@ -2,17 +2,26 @@ import os
 import skimage.io
 import skimage.transform
 import skimage.util
+import SymbolClassification
+
 
 class LocalSymbolData:
     training_imgs = []
     labels = []
+    classificationDic: SymbolClassification.ClassificationDictionary = None
 
-    def __init__(self):
+    def __init__(self, classification_dictionary: SymbolClassification.ClassificationDictionary):
         training_imgs = []
         labels = []
-        #TODO: READ ALL PICTURES OF SYMBOLS FROM FOLDER /annotated
-        #TODO: CONVERT ALL IMGS TO 28*28 AND PLATTEN THEM to 1*784 like PA4, PUT ALL LABELS IN self.labels
-        #for given index images in self.training_imgs should match with the label in self.label
+        self.classificationDic = classification_dictionary
+        # print(self.classificationDic.get_classification_array("("))
+        # print(self.classificationDic.get_classification_array("y"))
+        # eg. we have a b c, 3 symbols. Calling get_classification_array("b") will return [0, 1, 0]
+
+        # TODO: READ ALL PICTURES OF SYMBOLS FROM FOLDER /annotated
+
+        # TODO: CONVERT ALL IMGS TO 28*28 AND PLATTEN THEM to 1*784 like PA4, PUT ALL LABELS IN self.labels
+        # for given index images in self.training_imgs should match with the label in self.label
 
     def read(raw_images):
         #TODO: Read a list of imgs in any resolution, return resized imgs with demension of 1*784
