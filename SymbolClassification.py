@@ -14,7 +14,13 @@ class ClassificationDictionary:
     classification_dict = dict()
 
     def __init__(self):
-        files = [f for f in listdir('./annotated')]
+        print("make a empty place holder")
+
+    def __init__(self, training_dir: str):
+        # './annotated'
+        if training_dir == "":
+            return
+        files = [f for f in listdir(training_dir)]
         classification = set(['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'])
 
         for f in files:
@@ -91,7 +97,7 @@ def stretch():
 
 def main(_):
 
-    classficationDic = ClassificationDictionary()
+    classficationDic = ClassificationDictionary('./annotated')
     localData = LocalHandwrittenSymbolDataset.LocalSymbolData(classficationDic)
     testing_data = SymbolSegmentor.SymbolSegmentor()
 

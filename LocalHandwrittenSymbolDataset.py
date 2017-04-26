@@ -8,13 +8,13 @@ import SymbolClassification
 class LocalSymbolData:
     training_imgs = []
     labels = []
-    classificationDic: SymbolClassification.ClassificationDictionary = None
+    classificationDic = SymbolClassification.ClassificationDictionary('')
 
-    def __init__(self, classification_dictionary: SymbolClassification.ClassificationDictionary):
+    def __init__(self, classification_dictionary):
         training_imgs = []
         labels = []
         self.classificationDic = classification_dictionary
-        # print(self.classificationDic.get_classification_array("("))
+        print(self.classificationDic.get_classification_array("("))
         # print(self.classificationDic.get_classification_array("y"))
         # eg. we have a b c, 3 symbols. Calling get_classification_array("b") will return [0, 1, 0]
 
