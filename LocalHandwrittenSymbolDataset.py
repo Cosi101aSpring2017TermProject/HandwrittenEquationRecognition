@@ -21,6 +21,7 @@ class LocalSymbolData:
         training_imgs = []
         labels = []
         self.classificationDic = classification_dictionary
+        ind = 0
         print(self.classificationDic.get_classification_array("("))
         #get path
         print("hi")
@@ -28,10 +29,10 @@ class LocalSymbolData:
         files = [f for f in listdir(path1)]
 
         for f in files:
-            print(f)
+            # print(f)
             a = f.split("_")
             if len(a) == 8:
-                print("hi1")
+                # print(a)
                 im = Image.open(path1 + '/' + f).convert('L')
 
                 width = float(im.size[0])
@@ -55,7 +56,7 @@ class LocalSymbolData:
 
                 img = np.reshape(newIm, (1, 784))
                 training_imgs.append(img)
-
+                # print(a[3])
                 labels.append(self.classificationDic.get_classification_array(a[3]))
                 ind = ind + 1;
 
@@ -93,7 +94,7 @@ class LocalSymbolData:
             y.append(labels[num])
             ind = ind - 1;
         z = [x,y]
-
+        print(z)
         #TODO: This should do the same thing as train.next_batch(x) in tensorflow
         #TODO: Return a array of 2 element, the first should be the NEXT n images in self.training_imgs
         # , the second should be corresponding labels
