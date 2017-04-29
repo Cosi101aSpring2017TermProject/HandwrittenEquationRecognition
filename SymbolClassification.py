@@ -91,12 +91,12 @@ def max_pool_2x2(x):
                         strides=[1, 2, 2, 1], padding='SAME')
 
 # This method stretch the image
-def stretch(raw_image, label_batch, scale, compression_FLAG):
+def stretch(raw_image, scale, compression_flag):
     stretched_array = numpy.reshape(raw_image, (28, 28))
     # plot show image
     # plt.imshow(stretched_array)
     # plt.show()
-    if compression_FLAG:
+    if compression_flag:
         stretched_array = numpy.repeat(numpy.repeat(stretched_array, 30, axis=0), 30+scale*3, axis=1)
     else:
         stretched_array = numpy.repeat(numpy.repeat(stretched_array, 30+scale*3, axis=0), 30, axis=1)
@@ -112,12 +112,13 @@ def stretch(raw_image, label_batch, scale, compression_FLAG):
         padding = ((vertical_padding, vertical_padding), (horizontal_padding, horizontal_padding))
         stretched_array =  skimage.util.pad(stretched_array, padding, 'constant', constant_values=0)
     stretched_im = skimage.transform.resize(stretched_array, (28, 28))
+    stretched_im_784 = numpy.reshape(stretched_im, (1, 784))
     # plot show image
     # plt.imshow(stretched_im)
     # plt.show()
-    return stretched_im
+    return stretched_im_784
 
-def rot(raw_image, label_batch, scale):
+def rot(raw_image, scale):
     stretched_array = numpy.reshape(raw_image, (28, 28))
     # plot show image
     # plt.imshow(stretched_array)
@@ -135,12 +136,14 @@ def rot(raw_image, label_batch, scale):
                         tmp = stretched_array[k*21+l][m+count]
                         stretched_array[k*21+l][m] = tmp
         count = count + 2 * scale
-        print(count)
-    stretched_im = skimage.transform.resize(stretched_array, (28, 28))
+        # print(count)
+    rotated_im = skimage.transform.resize(stretched_array, (28, 28))
+    rotated_im_784 = numpy.reshape(rotated_im, (1, 784))
     # plot show image
     # plt.imshow(stretched_im)
     # plt.show()
-    return stretched_im
+    # print(rotated_im_784.shape)
+    return rotated_im_784
 
 
 def main(_):
@@ -210,12 +213,27 @@ def main(_):
             label_batch = [classficationDic.convert_mnist(num_array) for num_array in batch[1]]
             train_accuracy = accuracy.eval(feed_dict={x: batch[0], y_: label_batch, keep_prob: 1.0})
             train_step.run(feed_dict={x: batch[0], y_: label_batch, keep_prob: 0.5})
+            rot_batch_1 = [rot(num_array, -3) for num_array in batch[0]]
+            # train_accuracy = accuracy.eval(feed_dict={x: batch[0], y_: label_batch, keep_prob: 1.0})
+            # train_step.run(feed_dict={x: rot_batch_1[0], y_: label_batch, keep_prob: 0.5})
+            # rot_batch_2 = [rot(num_array, -2) for num_array in batch[0]]
+            # rot_batch_3 = [rot(num_array, -1) for num_array in batch[0]]
+            # rot_batch_4 = [rot(num_array, 1) for num_array in batch[0]]
+            # rot_batch_5 = [rot(num_array, 2) for num_array in batch[0]]
+            # rot_batch_6 = [rot(num_array, 3) for num_array in batch[0]]
+            stretch_batch_1 = [stretch(num_array, 1, True) for num_array in batch[0]]
+            # stretch_batch_2 = [stretch(num_array, 2, True) for num_array in batch[0]]
+            # stretch_batch_3 = [stretch(num_array, 3, True) for num_array in batch[0]]
+            # stretch_batch_4 = [stretch(num_array, 4, True) for num_array in batch[0]]
+            # stretch_batch_5 = [stretch(num_array, 1, False) for num_array in batch[0]]
+            # stretch_batch_6 = [stretch(num_array, 2, False) for num_array in batch[0]]
+            # stretch_batch_7 = [stretch(num_array, 3, False) for num_array in batch[0]]
+            # stretch_batch_8 = [stretch(num_array, 4, False) for num_array in batch[0]]
+
             # print(batch[0])
-            # better be from 1 to 5 skipping 0, and for both true and false
-            rotated_batch = stretch(batch[0], label_batch, 4, False)
+
             # train_step.run(feed_dict={x: rotated_batch[0], y_: rotated_batch[1], keep_prob: 0.5})
-            # better be from -3 to 3 skipping 0
-            stretched_batch = rot(batch[0], label_batch, -3)
+
             # train_step.run(feed_dict={x: stretched_batch[0], y_: stretched_batch[1], keep_prob: 0.5})
             if i % 100 == 0:
                 print("step %d, training accuracy %g" % (i, train_accuracy))
