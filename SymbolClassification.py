@@ -18,9 +18,6 @@ class ClassificationDictionary:
 
     classification_dict = dict()
 
-    def __init__(self):
-        print("make a empty place holder")
-
     def __init__(self, training_dir: str):
         # './annotated'
         if training_dir == "":
@@ -110,7 +107,7 @@ def stretch(raw_image, scale, compression_flag):
         horizontal_padding = 0
         vertical_padding = int(round((horizontal_pixel - vertical_pixel) / 2))
         padding = ((vertical_padding, vertical_padding), (horizontal_padding, horizontal_padding))
-        stretched_array =  skimage.util.pad(stretched_array, padding, 'constant', constant_values=0)
+        stretched_array = skimage.util.pad(stretched_array, padding, 'constant', constant_values=0)
     stretched_im = skimage.transform.resize(stretched_array, (28, 28))
     stretched_im_784 = numpy.reshape(stretched_im, (1, 784))
     # plot show image
@@ -125,9 +122,9 @@ def rot(raw_image, scale):
     # plt.show()
     stretched_array = numpy.repeat(numpy.repeat(stretched_array, 30, axis=0), 30, axis=1)
     count = -40 * scale
-    for k in range (0, 40):
+    for k in range(0, 40):
         for l in range(0, 21):
-            for m in range(0,840):
+            for m in range(0, 840):
                 if m+count >= 0 and m+count < 840:
                     if count < 0:
                         tmp = stretched_array[k*21+l][840-m+count]
@@ -152,12 +149,17 @@ def main(_):
     localData = LocalHandwrittenSymbolDataset.LocalSymbolData(classficationDic)
     testing_data = SymbolSegmentor.SymbolSegmentor()
 
+    mine_batch = localData.next_batch(50)
+
+
 
 
 
     #TODO: DEFINE MODEL
     number_of_classes = classficationDic.get_classes_number()
     mnist = input_data.read_data_sets(FLAGS.data_dir, one_hot=True)
+
+
 
     x = tf.placeholder(tf.float32, [None, 784])
     x_image = tf.reshape(x, [-1, 28, 28, 1])
@@ -210,10 +212,43 @@ def main(_):
         # Train
         for i in range(100):  # 20000
             batch = mnist.train.next_batch(50)
+            localdata_batch = localData.next_batch(50)
             label_batch = [classficationDic.convert_mnist(num_array) for num_array in batch[1]]
             train_accuracy = accuracy.eval(feed_dict={x: batch[0], y_: label_batch, keep_prob: 1.0})
             train_step.run(feed_dict={x: batch[0], y_: label_batch, keep_prob: 0.5})
-            rot_batch_1 = [rot(num_array, -3) for num_array in batch[0]]
+            rot_batch_1 = numpy.array([rot(num_array, -3) for num_array in batch[0]])
+            rot_batch_local = numpy.array([rot(num_array, -3) for num_array in localdata_batch[0]])
+            print("-`-`-`-`-`-`-`-`-`")
+            print("batch[0].shape")
+            print(batch[0].shape)
+            print("batch[1].shape")
+            print(batch[1].shape)
+
+            print("localdata_batch[0].shape")
+            print(localdata_batch[0].shape)
+            print("localdata_batch[1].shape")
+            print(localdata_batch[1].shape)
+
+
+
+            print("rot_batch_1.shape")
+            print(rot_batch_1.shape)
+
+            print("rot_batch_local.shape")
+            print(rot_batch_local.shape)
+            print("-`-`-`-`-`-`-`-`-`")
+            # print("mnist batch[0]")
+            # print(batch[0])
+            # print("mine_batch batch[0]")
+            # print(mine_batch[0])
+            # print("rot batch[0]")
+            # print(rot_batch_1)
+            #
+            # print("mnist label ")
+            # print(batch[1])
+            # print("mine label")
+            # print(mine_batch[1])
+
             # train_accuracy = accuracy.eval(feed_dict={x: batch[0], y_: label_batch, keep_prob: 1.0})
             # train_step.run(feed_dict={x: rot_batch_1[0], y_: label_batch, keep_prob: 0.5})
             # rot_batch_2 = [rot(num_array, -2) for num_array in batch[0]]
@@ -221,7 +256,7 @@ def main(_):
             # rot_batch_4 = [rot(num_array, 1) for num_array in batch[0]]
             # rot_batch_5 = [rot(num_array, 2) for num_array in batch[0]]
             # rot_batch_6 = [rot(num_array, 3) for num_array in batch[0]]
-            stretch_batch_1 = [stretch(num_array, 1, True) for num_array in batch[0]]
+            #stretch_batch_1 = [stretch(num_array, 1, True) for num_array in batch[0]]
             # stretch_batch_2 = [stretch(num_array, 2, True) for num_array in batch[0]]
             # stretch_batch_3 = [stretch(num_array, 3, True) for num_array in batch[0]]
             # stretch_batch_4 = [stretch(num_array, 4, True) for num_array in batch[0]]
@@ -238,6 +273,7 @@ def main(_):
             if i % 100 == 0:
                 print("step %d, training accuracy %g" % (i, train_accuracy))
                 print(batch[0].shape)
+
                 #print(label_batch.shape)
                 # print(label_batch.str())
 
