@@ -1,10 +1,15 @@
 import LocalHandwrittenSymbolDataset
 import SymbolSegmentor
 from os import listdir
+import skimage
+import skimage.util
+import skimage.transform
+from skimage import exposure
 import tensorflow as tf
 import argparse
 import sys
 import numpy
+import matplotlib.pyplot as plt
 from tensorflow.examples.tutorials.mnist import input_data
 
 do_restore = 0
@@ -85,14 +90,57 @@ def max_pool_2x2(x):
   return tf.nn.max_pool(x, ksize=[1, 2, 2, 1],
                         strides=[1, 2, 2, 1], padding='SAME')
 
+# This method stretch the image
+def stretch(raw_image, label_batch, scale, compression_FLAG):
+    stretched_array = numpy.reshape(raw_image, (28, 28))
+    # plot show image
+    # plt.imshow(stretched_array)
+    # plt.show()
+    if compression_FLAG:
+        stretched_array = numpy.repeat(numpy.repeat(stretched_array, 30, axis=0), 30+scale*3, axis=1)
+    else:
+        stretched_array = numpy.repeat(numpy.repeat(stretched_array, 30+scale*3, axis=0), 30, axis=1)
+    (vertical_pixel, horizontal_pixel) = stretched_array.shape
+    if vertical_pixel > horizontal_pixel:
+        vertical_padding = 0
+        horizontal_padding = int(round((vertical_pixel - horizontal_pixel) / 2))
+        padding = ((vertical_padding, vertical_padding), (horizontal_padding, horizontal_padding))
+        stretched_array = skimage.util.pad(stretched_array, padding, 'constant', constant_values=0)
+    else:
+        horizontal_padding = 0
+        vertical_padding = int(round((horizontal_pixel - vertical_pixel) / 2))
+        padding = ((vertical_padding, vertical_padding), (horizontal_padding, horizontal_padding))
+        stretched_array =  skimage.util.pad(stretched_array, padding, 'constant', constant_values=0)
+    stretched_im = skimage.transform.resize(stretched_array, (28, 28))
+    # plot show image
+    # plt.imshow(stretched_im)
+    # plt.show()
+    return stretched_im
 
-def rot():
-    # TODO: NEED IMPLEMENTATION
-    return []
-
-def stretch():
-    # TODO: NEED IMPLEMENTATION
-    return []
+def rot(raw_image, label_batch, scale):
+    stretched_array = numpy.reshape(raw_image, (28, 28))
+    # plot show image
+    # plt.imshow(stretched_array)
+    # plt.show()
+    stretched_array = numpy.repeat(numpy.repeat(stretched_array, 30, axis=0), 30, axis=1)
+    count = -40 * scale
+    for k in range (0, 40):
+        for l in range(0, 21):
+            for m in range(0,840):
+                if m+count >= 0 and m+count < 840:
+                    if count < 0:
+                        tmp = stretched_array[k*21+l][840-m+count]
+                        stretched_array[k*21+l][840-m] = tmp
+                    else:
+                        tmp = stretched_array[k*21+l][m+count]
+                        stretched_array[k*21+l][m] = tmp
+        count = count + 2 * scale
+        print(count)
+    stretched_im = skimage.transform.resize(stretched_array, (28, 28))
+    # plot show image
+    # plt.imshow(stretched_im)
+    # plt.show()
+    return stretched_im
 
 
 def main(_):
@@ -157,20 +205,23 @@ def main(_):
         saver.restore(sess, './model')
     else:
         # Train
-        for i in range(10000):  # 20000
+        for i in range(100):  # 20000
             batch = mnist.train.next_batch(50)
             label_batch = [classficationDic.convert_mnist(num_array) for num_array in batch[1]]
             train_accuracy = accuracy.eval(feed_dict={x: batch[0], y_: label_batch, keep_prob: 1.0})
             train_step.run(feed_dict={x: batch[0], y_: label_batch, keep_prob: 0.5})
-            # rotated_batch = rot(batch[0], label_batch)
+            # print(batch[0])
+            # better be from 1 to 5 skipping 0, and for both true and false
+            rotated_batch = stretch(batch[0], label_batch, 4, False)
             # train_step.run(feed_dict={x: rotated_batch[0], y_: rotated_batch[1], keep_prob: 0.5})
-            # stretched_batch = rot(batch[0], label_batch)
+            # better be from -3 to 3 skipping 0
+            stretched_batch = rot(batch[0], label_batch, -3)
             # train_step.run(feed_dict={x: stretched_batch[0], y_: stretched_batch[1], keep_prob: 0.5})
             if i % 100 == 0:
                 print("step %d, training accuracy %g" % (i, train_accuracy))
                 print(batch[0].shape)
                 #print(label_batch.shape)
-                print(label_batch)
+                # print(label_batch.str())
 
         save_path = saver.save(sess, 'model')
         print("Model saved in file: %s" % save_path)
