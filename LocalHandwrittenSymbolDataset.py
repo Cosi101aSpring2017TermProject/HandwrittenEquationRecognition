@@ -49,6 +49,9 @@ class LocalSymbolData:
                     lef = int(round(((28 - wid) / 2), 0))
                     newIm.paste(img, (lef, 4))
 
+                f_new = ".temp/"+f
+                skimage.io.imsave(f_new,newIm)
+
                 img = np.reshape(newIm, (1, 784))
                 if self.training_imgs.size == 0:
                     self.training_imgs = img/255
