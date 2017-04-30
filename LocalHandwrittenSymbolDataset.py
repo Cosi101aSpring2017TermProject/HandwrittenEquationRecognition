@@ -87,10 +87,7 @@ class LocalSymbolData:
         y = np.array([])
         for num in range(0, n):
             if self.ind == 0:
-                if not x:
-                    print("All data pairs have been consumed. Returned batch has zero pairs.")
-                else:
-                    print("The number of left pairs is less than n. Return all.")
+                print("The number of left pairs is less than n.")
                 break
             if x.size == 0:
                 x = self.training_imgs[num]

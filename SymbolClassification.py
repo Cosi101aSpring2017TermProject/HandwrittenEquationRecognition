@@ -142,6 +142,16 @@ def rot(raw_image, scale):
     # print(rotated_im_784.shape)
     return rotated_im_784
 
+#
+# def convert_dimension(py_list):
+#     temp = numpy.array([])
+#     for l in py_list:
+#         if temp.size == 0:
+#             temp = l
+#         else:
+#             numpy.vstack((temp, l))
+#     return temp
+
 
 def main(_):
 
@@ -210,44 +220,24 @@ def main(_):
         saver.restore(sess, './model')
     else:
         # Train
-        for i in range(100):  # 20000
-            batch = mnist.train.next_batch(50)
+        for i in range(10000):  # 20000
+            # get the data
+            batch = mnist.train.next_batch(5)
             localdata_batch = localData.next_batch(50)
+            # rot_batch_mnist = convert_dimension([rot(num_array, -3) for num_array in batch[0]])
+            # rot_batch_local = convert_dimension([rot(num_array, -3) for num_array in localdata_batch[0]])
+            # get the data
             label_batch = [classficationDic.convert_mnist(num_array) for num_array in batch[1]]
+            #
             train_accuracy = accuracy.eval(feed_dict={x: batch[0], y_: label_batch, keep_prob: 1.0})
             train_step.run(feed_dict={x: batch[0], y_: label_batch, keep_prob: 0.5})
-            rot_batch_1 = numpy.array([rot(num_array, -3) for num_array in batch[0]])
-            rot_batch_local = numpy.array([rot(num_array, -3) for num_array in localdata_batch[0]])
-            print("-`-`-`-`-`-`-`-`-`")
-            print("batch[0].shape")
-            print(batch[0].shape)
-            print("batch[1].shape")
-            print(batch[1].shape)
+            # train_step.run(feed_dict={x: rot_batch_mnist, y_: label_batch, keep_prob: 0.5})
 
-            print("localdata_batch[0].shape")
-            print(localdata_batch[0].shape)
-            print("localdata_batch[1].shape")
-            print(localdata_batch[1].shape)
-
-
-
-            print("rot_batch_1.shape")
-            print(rot_batch_1.shape)
-
-            print("rot_batch_local.shape")
-            print(rot_batch_local.shape)
-            print("-`-`-`-`-`-`-`-`-`")
-            # print("mnist batch[0]")
-            # print(batch[0])
-            # print("mine_batch batch[0]")
-            # print(mine_batch[0])
-            # print("rot batch[0]")
-            # print(rot_batch_1)
-            #
-            # print("mnist label ")
-            # print(batch[1])
-            # print("mine label")
-            # print(mine_batch[1])
+            # train with mnist
+            if localdata_batch[0].size != 0:
+                train_step.run(feed_dict={x: localdata_batch[0], y_: localdata_batch[1], keep_prob: 0.5})
+                # train_step.run(feed_dict={x: rot_batch_local, y_: localdata_batch[1], keep_prob: 0.5})
+                # train with local imgs
 
             # train_accuracy = accuracy.eval(feed_dict={x: batch[0], y_: label_batch, keep_prob: 1.0})
             # train_step.run(feed_dict={x: rot_batch_1[0], y_: label_batch, keep_prob: 0.5})
@@ -256,7 +246,7 @@ def main(_):
             # rot_batch_4 = [rot(num_array, 1) for num_array in batch[0]]
             # rot_batch_5 = [rot(num_array, 2) for num_array in batch[0]]
             # rot_batch_6 = [rot(num_array, 3) for num_array in batch[0]]
-            #stretch_batch_1 = [stretch(num_array, 1, True) for num_array in batch[0]]
+            # stretch_batch_1 = [stretch(num_array, 1, True) for num_array in batch[0]]
             # stretch_batch_2 = [stretch(num_array, 2, True) for num_array in batch[0]]
             # stretch_batch_3 = [stretch(num_array, 3, True) for num_array in batch[0]]
             # stretch_batch_4 = [stretch(num_array, 4, True) for num_array in batch[0]]
@@ -272,10 +262,23 @@ def main(_):
             # train_step.run(feed_dict={x: stretched_batch[0], y_: stretched_batch[1], keep_prob: 0.5})
             if i % 100 == 0:
                 print("step %d, training accuracy %g" % (i, train_accuracy))
+                print("-`-`-`-`-`-`-`-`-`")
+                print("batch[0].shape")
                 print(batch[0].shape)
+                print("batch[1].shape")
+                print(batch[1].shape)
 
-                #print(label_batch.shape)
-                # print(label_batch.str())
+                print("localdata_batch[0].shape")
+                print(localdata_batch[0].shape)
+                print("localdata_batch[1].shape")
+                print(localdata_batch[1].shape)
+
+                # print("rot_batch_mnist.shape")
+                # print(rot_batch_mnist.shape)
+
+                # print("rot_batch_local.shape")
+                # print(rot_batch_local.shape)
+                print("-`-`-`-`-`-`-`-`-`")
 
         save_path = saver.save(sess, 'model')
         print("Model saved in file: %s" % save_path)
