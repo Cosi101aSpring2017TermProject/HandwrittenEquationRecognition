@@ -5,7 +5,6 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/HandwrittenEquationRecognition.iml" afterPath="$PROJECT_DIR$/.idea/HandwrittenEquationRecognition.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/LocalHandwrittenSymbolDataset.py" afterPath="$PROJECT_DIR$/LocalHandwrittenSymbolDataset.py" />
     </list>
     <ignored path="generated/" />
     <ignored path="README.md" />
@@ -558,7 +557,14 @@
       <option name="project" value="LOCAL" />
       <updated>1493338602314</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="init+next batch">
+      <created>1493587189393</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1493587189393</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="ToolWindowManager">
