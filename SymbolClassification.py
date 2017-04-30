@@ -67,8 +67,6 @@ class ClassificationDictionary:
         return self.get_classification_array("nothing")
 
 
-
-
 def weight_variable(shape):
   initial = tf.truncated_normal(shape, stddev=0.1)
   return tf.Variable(initial)
@@ -113,7 +111,8 @@ def stretch(raw_image, scale, compression_flag):
     # plot show image
     # plt.imshow(stretched_im)
     # plt.show()
-    return stretched_im_784
+    return stretched_im_784[0].tolist()
+
 
 def rot(raw_image, scale):
     stretched_array = numpy.reshape(raw_image, (28, 28))
@@ -139,17 +138,25 @@ def rot(raw_image, scale):
     # plot show image
     # plt.imshow(stretched_im)
     # plt.show()
+    # print("in rot")
     # print(rotated_im_784.shape)
-    return rotated_im_784
+    return rotated_im_784[0].tolist()
 
-#
+
 # def convert_dimension(py_list):
 #     temp = numpy.array([])
 #     for l in py_list:
+#         print(l[0])
+#         print(len(l[0]))
+#         print(temp.size)
+#         # print(numpy.array(l[0]).shape)
 #         if temp.size == 0:
-#             temp = l
+#             temp = numpy.array(l[0])
 #         else:
-#             numpy.vstack((temp, l))
+#             print("add")
+#             numpy.vstack((temp, numpy.array(l[0])))
+#     print(temp.shape)
+#     print(temp)
 #     return temp
 
 
@@ -159,17 +166,9 @@ def main(_):
     localData = LocalHandwrittenSymbolDataset.LocalSymbolData(classficationDic)
     testing_data = SymbolSegmentor.SymbolSegmentor()
 
-    mine_batch = localData.next_batch(50)
-
-
-
-
-
-    #TODO: DEFINE MODEL
+    # DEFINE MODEL
     number_of_classes = classficationDic.get_classes_number()
     mnist = input_data.read_data_sets(FLAGS.data_dir, one_hot=True)
-
-
 
     x = tf.placeholder(tf.float32, [None, 784])
     x_image = tf.reshape(x, [-1, 28, 28, 1])
@@ -220,24 +219,38 @@ def main(_):
         saver.restore(sess, './model')
     else:
         # Train
-        for i in range(10000):  # 20000
+        for i in range(150):  # 20000
             # get the data
-            batch = mnist.train.next_batch(5)
+            batch = mnist.train.next_batch(50)
             localdata_batch = localData.next_batch(50)
-            # rot_batch_mnist = convert_dimension([rot(num_array, -3) for num_array in batch[0]])
-            # rot_batch_local = convert_dimension([rot(num_array, -3) for num_array in localdata_batch[0]])
+            # rot_batch_mnist = [rot(num_array, -3) for num_array in batch[0]]
+            # rot_batch_local = [rot(num_array, -3) for num_array in localdata_batch[0]]
             # get the data
             label_batch = [classficationDic.convert_mnist(num_array) for num_array in batch[1]]
+            # print(numpy.array(label_batch).shape)
+            # print(numpy.array(rot_batch_local).shape)
             #
             train_accuracy = accuracy.eval(feed_dict={x: batch[0], y_: label_batch, keep_prob: 1.0})
             train_step.run(feed_dict={x: batch[0], y_: label_batch, keep_prob: 0.5})
-            # train_step.run(feed_dict={x: rot_batch_mnist, y_: label_batch, keep_prob: 0.5})
 
             # train with mnist
             if localdata_batch[0].size != 0:
                 train_step.run(feed_dict={x: localdata_batch[0], y_: localdata_batch[1], keep_prob: 0.5})
-                # train_step.run(feed_dict={x: rot_batch_local, y_: localdata_batch[1], keep_prob: 0.5})
-                # train with local imgs
+                # train with different param
+                for rot_param in range(-2, 3):
+                    train_step.run(
+                        feed_dict={x: [rot(num_array, rot_param) for num_array in localdata_batch[0]], y_: localdata_batch[1],
+                                   keep_prob: 0.5})
+                for stretch_param in range(1, 4):
+                    train_step.run(
+                        feed_dict={x: [stretch(num_array, stretch_param, True) for num_array in batch[0]],
+                                   y_: localdata_batch[1], keep_prob: 0.5})
+                    train_step.run(
+                        feed_dict={x: [stretch(num_array, stretch_param, False) for num_array in batch[0]],
+                                   y_: localdata_batch[1], keep_prob: 0.5})
+
+
+            # train with local imgs
 
             # train_accuracy = accuracy.eval(feed_dict={x: batch[0], y_: label_batch, keep_prob: 1.0})
             # train_step.run(feed_dict={x: rot_batch_1[0], y_: label_batch, keep_prob: 0.5})
