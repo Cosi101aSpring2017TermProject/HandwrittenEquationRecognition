@@ -15,6 +15,7 @@ class LocalSymbolData:
     labels = np.array([])
     classificationDic = SymbolClassification.ClassificationDictionary('')
     ind = 0
+    max_ind = 0
 
     def __init__(self, classification_dictionary):
         self.classificationDic = classification_dictionary
@@ -64,7 +65,7 @@ class LocalSymbolData:
                 # self.training_imgs.append(img/255)
                 # self.labels.append(self.classificationDic.get_classification_array(a[3]))
                 self.ind += 1
-
+        self.max_ind = self.ind
 
         # print(self.classificationDic.get_classification_array("y"))
         # eg. we have a b c, 3 symbols. Calling get_classification_array("b") will return [0, 1, 0]
@@ -86,8 +87,7 @@ class LocalSymbolData:
         # y = np.array()
         # for num in range(1,n):
         # z = np,array([x,y])
-        print("ind")
-        print(self.ind)
+        print("%g percent data used." % round(1 - (self.ind/self.max_ind), 4))
         x = np.array([])
         y = np.array([])
         for num in range(0, n):
