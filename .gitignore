@@ -2,3 +2,5 @@
 .git/
 .idea/
 .generated/
+.temp/
+log.txt
