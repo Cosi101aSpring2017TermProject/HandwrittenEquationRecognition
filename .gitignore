@@ -1,6 +1,7 @@
-.__pycache__/
-.git/
-.idea/
-.generated/
-.temp/
+
+/.git/
+/.idea/
+/generated/
 log.txt
+/temp/
+/__pycache__/
