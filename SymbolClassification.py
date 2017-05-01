@@ -143,24 +143,6 @@ def rot(raw_image, scale):
     # print(rotated_im_784.shape)
     return rotated_im_784[0].tolist()
 
-
-# def convert_dimension(py_list):
-#     temp = numpy.array([])
-#     for l in py_list:
-#         print(l[0])
-#         print(len(l[0]))
-#         print(temp.size)
-#         # print(numpy.array(l[0]).shape)
-#         if temp.size == 0:
-#             temp = numpy.array(l[0])
-#         else:
-#             print("add")
-#             numpy.vstack((temp, numpy.array(l[0])))
-#     print(temp.shape)
-#     print(temp)
-#     return temp
-
-
 def main(_):
 
     classficationDic = ClassificationDictionary('./annotated')
@@ -260,12 +242,7 @@ def main(_):
         log_txt.close()
         save_path = saver.save(sess, 'model')
         print("Model saved in file: %s" % save_path)
-
-
     #TODO: TEST
-
-
-
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
