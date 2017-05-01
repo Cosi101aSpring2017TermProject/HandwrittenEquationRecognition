@@ -87,7 +87,7 @@ class LocalSymbolData:
         # y = np.array()
         # for num in range(1,n):
         # z = np,array([x,y])
-        print("%g percent done." % round((1-(self.ind/self.max_ind) * 100), 4))
+        print("%g percent done." % round(((1-(self.ind/self.max_ind)) * 100), 4))
         x = np.array([])
         y = np.array([])
         for num in range(0, n):

@@ -221,6 +221,7 @@ def main(_):
     else:
         # Train
         number_steps = 150
+        log_txt = open('log.txt', 'w')
         for i in range(number_steps):  # 20000
             # get the data
             batch = mnist.train.next_batch(50)
@@ -247,11 +248,16 @@ def main(_):
                         feed_dict={x: [stretch(num_array, stretch_param, False) for num_array in batch[0]],
                                    y_: localdata_batch[1], keep_prob: 0.5})
             train_loc_acc = accuracy.eval(feed_dict={x: localdata_batch[0], y_: localdata_batch[1], keep_prob: 1.0})
-            print("-`-`-`-`-`-`-`-`-`")
-            print("step %d out of %d, \nMNIST data training accuracy %g" % (i, number_steps, train_accuracy))
-            print("Local data training accuracy %g" % train_loc_acc)
-            print("-`-`-`-`-`-`-`-`-`\n")
 
+            print("-`-`-`-`-`-`-`-`-`")
+            log_txt.write("-`-`-`-`-`-`-`-`-`")
+            print("step %d out of %d, \nMNIST data training accuracy %g" % (i, number_steps, train_accuracy))
+            log_txt.write("step %d out of %d, \nMNIST data training accuracy %g" % (i, number_steps, train_accuracy))
+            print("Local data training accuracy %g" % train_loc_acc)
+            log_txt.write("Local data training accuracy %g" % train_loc_acc)
+            print("-`-`-`-`-`-`-`-`-`\n")
+            log_txt.write("-`-`-`-`-`-`-`-`-`\n")
+        log_txt.close()
         save_path = saver.save(sess, 'model')
         print("Model saved in file: %s" % save_path)
 
