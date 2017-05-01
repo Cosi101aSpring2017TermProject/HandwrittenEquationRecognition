@@ -87,24 +87,27 @@ class LocalSymbolData:
         # y = np.array()
         # for num in range(1,n):
         # z = np,array([x,y])
-        print("%g percent data used." % round(1 - (self.ind/self.max_ind), 4))
+        print("%g percent done." % round((1-(self.ind/self.max_ind) * 100), 4))
         x = np.array([])
         y = np.array([])
         for num in range(0, n):
             if self.ind == 0:
                 print("The number of left pairs is less than n.")
-                break
-            if x.size == 0:
-                x = self.training_imgs[num]
-                y = self.labels[num]
+                if x.size == 0:
+                    return [np.array([]), np.array([])]
+                else:
+                    x = np.vstack((x, self.training_imgs[num % self.max_ind]))
+                    y = np.vstack((y, self.labels[num % self.max_ind]))
             else:
-                # print(x.shape)
-                # print(self.training_imgs[num].shape)
-                # print(self.training_imgs.shape)
-                x = np.vstack((x, self.training_imgs[num]))
-                y = np.vstack((y, self.labels[num]))
-            # x.append(self.training_imgs[num])
-            # y.append(self.labels[num])
+                if x.size == 0:
+                    x = self.training_imgs[num]
+                    y = self.labels[num]
+                else:
+                    # print(x.shape)
+                    # print(self.training_imgs[num].shape)
+                    # print(self.training_imgs.shape)
+                    x = np.vstack((x, self.training_imgs[num]))
+                    y = np.vstack((y, self.labels[num]))
             self.ind = self.ind - 1
         z = [x, y]
         #print("\n")

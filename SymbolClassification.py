@@ -100,12 +100,13 @@ def stretch(raw_image, scale, compression_flag):
         vertical_padding = 0
         horizontal_padding = int(round((vertical_pixel - horizontal_pixel) / 2))
         padding = ((vertical_padding, vertical_padding), (horizontal_padding, horizontal_padding))
-        stretched_array = skimage.util.pad(stretched_array, padding, 'constant', constant_values=0)
+        stretched_array = numpy.lib.pad(stretched_array, padding, 'constant', constant_values=0)
+
     else:
         horizontal_padding = 0
         vertical_padding = int(round((horizontal_pixel - vertical_pixel) / 2))
         padding = ((vertical_padding, vertical_padding), (horizontal_padding, horizontal_padding))
-        stretched_array = skimage.util.pad(stretched_array, padding, 'constant', constant_values=0)
+        stretched_array = numpy.lib.pad(stretched_array, padding, 'constant', constant_values=0)
     stretched_im = skimage.transform.resize(stretched_array, (28, 28))
     stretched_im_784 = numpy.reshape(stretched_im, (1, 784))
     # plot show image
@@ -219,18 +220,14 @@ def main(_):
         saver.restore(sess, './model')
     else:
         # Train
-        for i in range(150):  # 20000
+        number_steps = 150
+        for i in range(number_steps):  # 20000
             # get the data
             batch = mnist.train.next_batch(50)
             localdata_batch = localData.next_batch(50)
-            # rot_batch_mnist = [rot(num_array, -3) for num_array in batch[0]]
-            # rot_batch_local = [rot(num_array, -3) for num_array in localdata_batch[0]]
-            # get the data
             label_batch = [classficationDic.convert_mnist(num_array) for num_array in batch[1]]
-            # print(numpy.array(label_batch).shape)
-            # print(numpy.array(rot_batch_local).shape)
-            #
             train_accuracy = accuracy.eval(feed_dict={x: batch[0], y_: label_batch, keep_prob: 1.0})
+
             train_step.run(feed_dict={x: batch[0], y_: label_batch, keep_prob: 0.5})
 
             # train with mnist
@@ -239,7 +236,8 @@ def main(_):
                 # train with different param
                 for rot_param in range(-2, 3):
                     train_step.run(
-                        feed_dict={x: [rot(num_array, rot_param) for num_array in localdata_batch[0]], y_: localdata_batch[1],
+                        feed_dict={x: [rot(num_array, rot_param) for num_array in localdata_batch[0]],
+                                   y_: localdata_batch[1],
                                    keep_prob: 0.5})
                 for stretch_param in range(1, 4):
                     train_step.run(
@@ -248,50 +246,11 @@ def main(_):
                     train_step.run(
                         feed_dict={x: [stretch(num_array, stretch_param, False) for num_array in batch[0]],
                                    y_: localdata_batch[1], keep_prob: 0.5})
-
-
-            # train with local imgs
-
-            # train_accuracy = accuracy.eval(feed_dict={x: batch[0], y_: label_batch, keep_prob: 1.0})
-            # train_step.run(feed_dict={x: rot_batch_1[0], y_: label_batch, keep_prob: 0.5})
-            # rot_batch_2 = [rot(num_array, -2) for num_array in batch[0]]
-            # rot_batch_3 = [rot(num_array, -1) for num_array in batch[0]]
-            # rot_batch_4 = [rot(num_array, 1) for num_array in batch[0]]
-            # rot_batch_5 = [rot(num_array, 2) for num_array in batch[0]]
-            # rot_batch_6 = [rot(num_array, 3) for num_array in batch[0]]
-            # stretch_batch_1 = [stretch(num_array, 1, True) for num_array in batch[0]]
-            # stretch_batch_2 = [stretch(num_array, 2, True) for num_array in batch[0]]
-            # stretch_batch_3 = [stretch(num_array, 3, True) for num_array in batch[0]]
-            # stretch_batch_4 = [stretch(num_array, 4, True) for num_array in batch[0]]
-            # stretch_batch_5 = [stretch(num_array, 1, False) for num_array in batch[0]]
-            # stretch_batch_6 = [stretch(num_array, 2, False) for num_array in batch[0]]
-            # stretch_batch_7 = [stretch(num_array, 3, False) for num_array in batch[0]]
-            # stretch_batch_8 = [stretch(num_array, 4, False) for num_array in batch[0]]
-
-            # print(batch[0])
-
-            # train_step.run(feed_dict={x: rotated_batch[0], y_: rotated_batch[1], keep_prob: 0.5})
-
-            # train_step.run(feed_dict={x: stretched_batch[0], y_: stretched_batch[1], keep_prob: 0.5})
-            if i % 100 == 0:
-                print("step %d, training accuracy %g" % (i, train_accuracy))
-                print("-`-`-`-`-`-`-`-`-`")
-                print("batch[0].shape")
-                print(batch[0].shape)
-                print("batch[1].shape")
-                print(batch[1].shape)
-
-                print("localdata_batch[0].shape")
-                print(localdata_batch[0].shape)
-                print("localdata_batch[1].shape")
-                print(localdata_batch[1].shape)
-
-                # print("rot_batch_mnist.shape")
-                # print(rot_batch_mnist.shape)
-
-                # print("rot_batch_local.shape")
-                # print(rot_batch_local.shape)
-                print("-`-`-`-`-`-`-`-`-`")
+            train_loc_acc = accuracy.eval(feed_dict={x: localdata_batch[0], y_: localdata_batch[1], keep_prob: 1.0})
+            print("-`-`-`-`-`-`-`-`-`")
+            print("step %d out of %d, \nMNIST data training accuracy %g" % (i, number_steps, train_accuracy))
+            print("Local data training accuracy %g" % train_loc_acc)
+            print("-`-`-`-`-`-`-`-`-`\n")
 
         save_path = saver.save(sess, 'model')
         print("Model saved in file: %s" % save_path)
