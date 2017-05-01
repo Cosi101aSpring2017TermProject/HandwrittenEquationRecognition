@@ -107,7 +107,7 @@ def stretch(raw_image, scale, compression_flag):
         vertical_padding = int(round((horizontal_pixel - vertical_pixel) / 2))
         padding = ((vertical_padding, vertical_padding), (horizontal_padding, horizontal_padding))
         stretched_array = numpy.lib.pad(stretched_array, padding, 'constant', constant_values=0)
-    stretched_im = skimage.transform.resize(stretched_array, (28, 28))
+    stretched_im = numpy.resize(stretched_array, (28, 28))
     stretched_im_784 = numpy.reshape(stretched_im, (1, 784))
     # plot show image
     # plt.imshow(stretched_im)
@@ -134,7 +134,7 @@ def rot(raw_image, scale):
                         stretched_array[k*21+l][m] = tmp
         count = count + 2 * scale
         # print(count)
-    rotated_im = skimage.transform.resize(stretched_array, (28, 28))
+    rotated_im = numpy.resize(stretched_array, (28, 28))
     rotated_im_784 = numpy.reshape(rotated_im, (1, 784))
     # plot show image
     # plt.imshow(stretched_im)
