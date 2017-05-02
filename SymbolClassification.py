@@ -206,8 +206,8 @@ def main(_):
         # Train
         number_steps = 150
         batch_number = 50  # size of data pairs being trained each step
-        log_txt = open('log.txt', 'w')
-        for i in range(number_steps):  # 20000
+        # log_txt = open('log.txt', 'w')
+        for i in range(number_steps):
 
             # MARK: get the data
             batch = mnist.train.next_batch(batch_number)  # MNIST data set batch 1
@@ -247,16 +247,16 @@ def main(_):
 
             # MARK: print out and record the result for each step
             print("-`-`-`-`-`-`-`-`-`")
-            log_txt.write("-`-`-`-`-`-`-`-`-`\n")
+            # log_txt.write("-`-`-`-`-`-`-`-`-`\n")
             print("step %d out of %d, \nMNIST data training accuracy %g" % (i, number_steps, train_accuracy))
-            log_txt.write("step %d out of %d, \nMNIST data training accuracy %g\n" % (i, number_steps, train_accuracy))
+            # log_txt.write("step %d out of %d, \nMNIST data training accuracy %g\n" % (i, number_steps, train_accuracy))
             if localdata_batch[0].size != 0:
                 print("Local data training accuracy %g" % train_loc_acc)
-                log_txt.write("Local data training accuracy %g\n" % train_loc_acc)
+                # log_txt.write("Local data training accuracy %g\n" % train_loc_acc)
             print("-`-`-`-`-`-`-`-`-`\n\n")
-            log_txt.write("-`-`-`-`-`-`-`-`-`\n")
-        log_txt.close()
-        save_path = saver.save(sess, 'model')  # save model
+            # log_txt.write("-`-`-`-`-`-`-`-`-`\n")
+        # log_txt.close()
+        save_path = saver.save(sess, './model')  # save model
         print("Model saved in file: %s" % save_path)
     # TODO: TEST
 

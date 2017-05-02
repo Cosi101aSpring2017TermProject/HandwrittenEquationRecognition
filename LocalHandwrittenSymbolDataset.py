@@ -7,7 +7,7 @@ from PIL import Image
 from PIL import ImageFilter
 import numpy as np
 from os import listdir
-import random
+from random import randint
 
 
 class LocalSymbolData:
@@ -165,29 +165,25 @@ class LocalSymbolData:
         print("%g percent done." % round(((1-(self.ind/self.max_ind)) * 100), 4))
         x = np.array([])
         y = np.array([])
-        for num in range(0, n):
-            if self.ind == 0:
+        self.ind = self.ind - n
+        start = self.ind
+        end = self.ind + n
+        for num in range(start, end):
+            if num < 0:
                 print("The number of left pairs is less than n.")
-                if x.size == 0:
-                    return [np.array([]), np.array([])]
-                else:
-                    x = np.vstack((x, self.training_imgs[num % self.max_ind]))
-                    y = np.vstack((y, self.labels[num % self.max_ind]))
+                x = np.vstack((x, self.training_imgs[randint(0, self.max_ind - 1)]))
+                y = np.vstack((y, self.labels[randint(0, self.max_ind - 1)]))
             else:
                 if x.size == 0:
                     x = self.training_imgs[num]
                     y = self.labels[num]
                 else:
-                    # print(x.shape)
-                    # print(self.training_imgs[num].shape)
-                    # print(self.training_imgs.shape)
                     x = np.vstack((x, self.training_imgs[num]))
                     y = np.vstack((y, self.labels[num]))
-            self.ind = self.ind - 1
+
         z = [x, y]
         #print("\n")
         #print("localHandwrittenSymbolDataset.next_batch(%d)" % n)
-        #print(z)
         #This should do the same thing as train.next_batch(x) in tensorflow
         # Return a array of 2 element, the first should be the NEXT n images in self.training_imgs
         # , the second should be corresponding labels
