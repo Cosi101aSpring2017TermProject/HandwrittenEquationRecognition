@@ -30,30 +30,31 @@ class LocalSymbolData:
             if len(a) == 8:
                 # print(a)
                 im = Image.open(path1 + '/' + f).convert('L')
+                newIm = img_process(im)
 
-                width = float(im.size[0])
-                height = float(im.size[1])
-                newIm = Image.new("L", (28, 28), (0))
-
-                if width > height:
-                    hei = int(round((20.0 / width * height), 0))
-                    if hei == 0:
-                        hei = 1
-                    img = im.resize((20, hei), Image.ANTIALIAS).filter(ImageFilter.SHARPEN)
-                    top = int(round(((28 - hei) / 2), 0))
-                    newIm.paste(img, (4, top))
-                else:
-                    wid = int(round((20.0 / height * width), 0))
-                    if wid == 0:
-                        wid = 1
-                    img = im.resize((wid, 20), Image.ANTIALIAS).filter(ImageFilter.SHARPEN)
-                    lef = int(round(((28 - wid) / 2), 0))
-                    newIm.paste(img, (lef, 4))
-
-                if not os.path.exists("temp"):
-                    os.makedirs("temp")
-                f_new = "temp/"+f
-                skimage.io.imsave(f_new, newIm)
+                # width = float(im.size[0])
+                # height = float(im.size[1])
+                # newIm = Image.new("L", (28, 28), (0))
+                #
+                # if width > height:
+                #     hei = int(round((20.0 / width * height), 0))
+                #     if hei == 0:
+                #         hei = 1
+                #     img = im.resize((20, hei), Image.ANTIALIAS).filter(ImageFilter.SHARPEN)
+                #     top = int(round(((28 - hei) / 2), 0))
+                #     newIm.paste(img, (4, top))
+                # else:
+                #     wid = int(round((20.0 / height * width), 0))
+                #     if wid == 0:
+                #         wid = 1
+                #     img = im.resize((wid, 20), Image.ANTIALIAS).filter(ImageFilter.SHARPEN)
+                #     lef = int(round(((28 - wid) / 2), 0))
+                #     newIm.paste(img, (lef, 4))
+                #
+                # if not os.path.exists("temp"):
+                #     os.makedirs("temp")
+                # f_new = "temp/"+f
+                # skimage.io.imsave(f_new, newIm)
 
                 img = np.reshape(newIm, (1, 784))
                 if self.training_imgs.size == 0:
@@ -74,11 +75,26 @@ class LocalSymbolData:
         # TODO: CONVERT ALL IMGS TO 28*28 AND PLATTEN THEM to 1*784 like PA4, PUT ALL LABELS IN self.labels
         # for given index images in self.training_imgs should match with the label in self.label
 
-    def read(self, raw_images):
-        print("hi2")
+    def read(self, image_folder):
+        x = np.array([])
+        y = np.array([])
+
+        files = [f for f in listdir(image_folder)]
+
+        for f in files:
+            im = Image.open(path1 + '/' + f).convert('L')
+            newIm = img_process(im)
+            img = np.reshape(newIm, (1, 784))
+
+            x = np.vstack((x, img))
+            y = np.vstack((y, f))
+        return [x,y]
+
+
+
 
         #TODO: Read a list of imgs in any resolution, return resized imgs with demension of 1*784
-        return []
+        # return []
 
     def next_batch(self, n):
         # training_imgs = self.training_imgs
@@ -117,6 +133,34 @@ class LocalSymbolData:
         # Return a array of 2 element, the first should be the NEXT n images in self.training_imgs
         # , the second should be corresponding labels
         return z
+
+    def img_process(im):
+
+        width = float(im.size[0])
+        height = float(im.size[1])
+        newIm = Image.new("L", (28, 28), (0))
+
+        if width > height:
+            hei = int(round((20.0 / width * height), 0))
+            if hei == 0:
+                hei = 1
+            img = im.resize((20, hei), Image.ANTIALIAS).filter(ImageFilter.SHARPEN)
+            top = int(round(((28 - hei) / 2), 0))
+            newIm.paste(img, (4, top))
+        else:
+            wid = int(round((20.0 / height * width), 0))
+            if wid == 0:
+                wid = 1
+            img = im.resize((wid, 20), Image.ANTIALIAS).filter(ImageFilter.SHARPEN)
+            lef = int(round(((28 - wid) / 2), 0))
+            newIm.paste(img, (lef, 4))
+
+        if not os.path.exists("temp"):
+            os.makedirs("temp")
+        f_new = "temp/" + f
+        skimage.io.imsave(f_new, newIm)
+
+        return newIm
 
     # # useful helper methods
     # def dilate(img, radius):
