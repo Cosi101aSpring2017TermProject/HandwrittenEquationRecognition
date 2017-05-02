@@ -9,7 +9,7 @@ import tensorflow as tf
 import argparse
 import sys
 import numpy
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 from tensorflow.examples.tutorials.mnist import input_data
 
 do_restore = 0
@@ -149,6 +149,7 @@ def main(_):
     classficationDic = ClassificationDictionary('./annotated')
     localData = LocalHandwrittenSymbolDataset.LocalSymbolData(classficationDic)
     testing_data = SymbolSegmentor.SymbolSegmentor()
+    localData.read('ss')
 
     # DEFINE MODEL
     number_of_classes = classficationDic.get_classes_number()
