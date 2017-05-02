@@ -143,6 +143,7 @@ def rot(raw_image, scale):
     # print(rotated_im_784.shape)
     return rotated_im_784[0].tolist()
 
+
 def main(_):
 
     classficationDic = ClassificationDictionary('./annotated')
@@ -203,46 +204,60 @@ def main(_):
     else:
         # Train
         number_steps = 150
+        batch_number = 50  # size of data pairs being trained each step
         log_txt = open('log.txt', 'w')
         for i in range(number_steps):  # 20000
-            # get the data
-            batch = mnist.train.next_batch(50)
-            localdata_batch = localData.next_batch(50)
+
+            # MARK: get the data
+            batch = mnist.train.next_batch(batch_number)  # MNIST data set batch 1
             label_batch = [classficationDic.convert_mnist(num_array) for num_array in batch[1]]
+            batch_2 = mnist.train.next_batch(batch_number)  # MNIST data set batch 2
+            label_batch_2 = [classficationDic.convert_mnist(num_array) for num_array in batch_2[1]]
+            localdata_batch = localData.next_batch(batch_number)  # Local data from annotated folder
+            # get the data
+
+            # MARK: define accuracy
             train_accuracy = accuracy.eval(feed_dict={x: batch[0], y_: label_batch, keep_prob: 1.0})
 
-            train_step.run(feed_dict={x: batch[0], y_: label_batch, keep_prob: 0.5})
-
-            # train with mnist
+            # MARK: TRAIN
+            train_step.run(feed_dict={x: batch[0], y_: label_batch, keep_prob: 0.5})  # train with MNIST batch
+            train_step.run(feed_dict={x: batch_2[0], y_: label_batch_2, keep_prob: 0.5})  # train with MNIST batch_2
+            train_loc_acc = 0.0
             if localdata_batch[0].size != 0:
                 train_step.run(feed_dict={x: localdata_batch[0], y_: localdata_batch[1], keep_prob: 0.5})
-                # train with different param
+                # train with raw local data
+
+                # MARK: Augment local data and train augmented data
                 for rot_param in range(-2, 3):
+                    # rotation
                     train_step.run(
                         feed_dict={x: [rot(num_array, rot_param) for num_array in localdata_batch[0]],
                                    y_: localdata_batch[1],
                                    keep_prob: 0.5})
                 for stretch_param in range(1, 4):
+                    # stretch
                     train_step.run(
                         feed_dict={x: [stretch(num_array, stretch_param, True) for num_array in batch[0]],
                                    y_: localdata_batch[1], keep_prob: 0.5})
                     train_step.run(
                         feed_dict={x: [stretch(num_array, stretch_param, False) for num_array in batch[0]],
                                    y_: localdata_batch[1], keep_prob: 0.5})
-            train_loc_acc = accuracy.eval(feed_dict={x: localdata_batch[0], y_: localdata_batch[1], keep_prob: 1.0})
+                train_loc_acc = accuracy.eval(feed_dict={x: localdata_batch[0], y_: localdata_batch[1], keep_prob: 1.0})
 
+            # MARK: print out and record the result for each step
             print("-`-`-`-`-`-`-`-`-`")
             log_txt.write("-`-`-`-`-`-`-`-`-`\n")
             print("step %d out of %d, \nMNIST data training accuracy %g" % (i, number_steps, train_accuracy))
             log_txt.write("step %d out of %d, \nMNIST data training accuracy %g\n" % (i, number_steps, train_accuracy))
-            print("Local data training accuracy %g" % train_loc_acc)
-            log_txt.write("Local data training accuracy %g\n" % train_loc_acc)
+            if localdata_batch[0].size != 0:
+                print("Local data training accuracy %g" % train_loc_acc)
+                log_txt.write("Local data training accuracy %g\n" % train_loc_acc)
             print("-`-`-`-`-`-`-`-`-`\n\n")
             log_txt.write("-`-`-`-`-`-`-`-`-`\n")
         log_txt.close()
-        save_path = saver.save(sess, 'model')
+        save_path = saver.save(sess, 'model')  # save model
         print("Model saved in file: %s" % save_path)
-    #TODO: TEST
+    # TODO: TEST
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
