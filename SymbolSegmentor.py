@@ -41,7 +41,7 @@ class SymbolSegmentor:
     rect_counter = 0
     for contour in ctrs:
         symbol_container = np.zeros((128, 1693, 3), np.uint8)
-        cv2.drawContours(symbol_container, contour, -1, (0, 255, 0), 3)
+        cv2.drawContours(symbol_container, contour, -1, (0, 255, 0), 6)
         rect = rects[rect_counter]
         rect_counter = rect_counter + 1
         # cv2.rectangle(symbol_container, (rect[0], rect[1]), (rect[0] + rect[2], rect[1] + rect[3]), (0, 255, 0), 3)
@@ -53,8 +53,15 @@ class SymbolSegmentor:
         vertex_x_end=rect[0]+ rect[2]+10
         vertex_y_begin=rect[1]-10
         vertex_y_end=rect[1]+ rect[3]+10
-
+        print(vertex_x_end-vertex_x_begin)
+        print(vertex_y_end - vertex_y_begin)
         crop_img = symbol_container[vertex_y_begin:vertex_y_end, vertex_x_begin:vertex_x_end]
+        # print()
+        for i in range(0, vertex_x_end-vertex_x_begin):
+            for j in range(0, vertex_y_end - vertex_y_begin):
+                int_tmp = cv2.pointPolygonTest(contour, (i,j), False)
+                if int_tmp == 0:
+                    crop_img[j][i] = (0, 255, 0)
         plt.imshow(crop_img)
         plt.show()
         save_image(img_num_counter, crop_img)
