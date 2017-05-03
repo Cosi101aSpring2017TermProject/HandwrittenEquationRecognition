@@ -64,8 +64,8 @@
       <file leaf-file-name="SymbolSegmentor.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/SymbolSegmentor.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="124">
-              <caret line="49" column="24" lean-forward="true" selection-start-line="49" selection-start-column="24" selection-end-line="49" selection-end-column="24" />
+            <state relative-caret-position="328">
+              <caret line="61" column="69" lean-forward="true" selection-start-line="61" selection-start-column="69" selection-end-line="61" selection-end-column="69" />
               <folding>
                 <element signature="e#413#423#0" expanded="true" />
               </folding>
@@ -1206,7 +1206,14 @@
       <option name="project" value="LOCAL" />
       <updated>1493803360831</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="2AM:&#10;some idea about symbol segmentation, following progress:&#10;1. contouring should be working fine&#10;2. struggling w/ extracting symbol with contour (instead of the box)&#10;3. currently trying drawContour, only resulted in a mess&#10;... to be updated&#10;&#10;2:50AM:&#10;At least, the contour is found and extracted... but the image looks ugly... and the program looks messy&#10;two places to improve:&#10;1. the current image id of the same size as the original iamge, how can I make it into a smaller image that just fits the contour&#10;2. the countour seems to be the circumference of a symbol, I need to recover it back to the symbol&#10;&#10;3:30AM:&#10;updated saving an image through loop:&#10;&#10;4:50AM:&#10;I'm able to cut out a symbol now... although it look ugly... but some progress is better than no progress&#10;The only problem left: how to make the image of a single symbol pretty...&#10;&#10;5:20AM:&#10;I'm done for today...">
+      <created>1493823973418</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1493823973418</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -1618,8 +1625,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/SymbolSegmentor.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="124">
-          <caret line="49" column="24" lean-forward="true" selection-start-line="49" selection-start-column="24" selection-end-line="49" selection-end-column="24" />
+        <state relative-caret-position="328">
+          <caret line="61" column="69" lean-forward="true" selection-start-line="61" selection-start-column="69" selection-end-line="61" selection-end-column="69" />
           <folding>
             <element signature="e#413#423#0" expanded="true" />
           </folding>
