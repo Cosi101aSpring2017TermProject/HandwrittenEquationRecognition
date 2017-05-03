@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="22347338-1ced-4b5c-ba7d-4032619120d5" name="Default" comment="2AM:&#10;some idea about symbol segmentation, following progress:&#10;1. contouring should be working fine&#10;2. struggling w/ extracting symbol with contour (instead of the box)&#10;3. currently trying drawContour, only resulted in a mess&#10;... to be updated&#10;&#10;2:50AM:&#10;At least, the contour is found and extracted... but the image looks ugly... and the program looks messy&#10;two places to improve:&#10;1. the current image id of the same size as the original iamge, how can I make it into a smaller image that just fits the contour&#10;2. the countour seems to be the circumference of a symbol, I need to recover it back to the symbol&#10;&#10;3:30AM:&#10;updated saving an image through loop:&#10;&#10;4:50AM:&#10;I'm able to cut out a symbol now... although it look ugly... but some progress is better than no progress&#10;The only problem left: how to make the image of a single symbol pretty...&#10;&#10;5:20">
+    <list default="true" id="22347338-1ced-4b5c-ba7d-4032619120d5" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SymbolSegmentor.py" afterPath="$PROJECT_DIR$/SymbolSegmentor.py" />
     </list>
     <ignored path="generated/" />
     <ignored path="README.md" />
@@ -65,8 +64,8 @@
       <file leaf-file-name="SymbolSegmentor.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/SymbolSegmentor.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="106">
-              <caret line="48" column="19" lean-forward="true" selection-start-line="48" selection-start-column="19" selection-end-line="48" selection-end-column="19" />
+            <state relative-caret-position="356">
+              <caret line="58" column="17" lean-forward="true" selection-start-line="58" selection-start-column="17" selection-end-line="58" selection-end-column="17" />
               <folding>
                 <element signature="e#413#423#0" expanded="true" />
               </folding>
@@ -1192,7 +1191,14 @@
       <option name="project" value="LOCAL" />
       <updated>1493801625624</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="2AM:&#10;some idea about symbol segmentation, following progress:&#10;1. contouring should be working fine&#10;2. struggling w/ extracting symbol with contour (instead of the box)&#10;3. currently trying drawContour, only resulted in a mess&#10;... to be updated&#10;&#10;2:50AM:&#10;At least, the contour is found and extracted... but the image looks ugly... and the program looks messy&#10;two places to improve:&#10;1. the current image id of the same size as the original iamge, how can I make it into a smaller image that just fits the contour&#10;2. the countour seems to be the circumference of a symbol, I need to recover it back to the symbol&#10;&#10;3:30AM:&#10;updated saving an image through loop:&#10;&#10;4:50AM:&#10;I'm able to cut out a symbol now... although it look ugly... but some progress is better than no progress&#10;The only problem left: how to make the image of a single symbol pretty...&#10;&#10;5:20AM:&#10;I'm done for today...">
+      <created>1493803302133</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1493803302133</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -1242,7 +1248,8 @@
     <MESSAGE value="some idea about symbol segmentation, following progress:&#10;1. contouring should be working fine&#10;2. struggling w/ extracting symbol with contour (instead of the box)&#10;3. currently trying drawContour, only resulted in a mess&#10;... to be updated" />
     <MESSAGE value="2AM:&#10;some idea about symbol segmentation, following progress:&#10;1. contouring should be working fine&#10;2. struggling w/ extracting symbol with contour (instead of the box)&#10;3. currently trying drawContour, only resulted in a mess&#10;... to be updated&#10;&#10;2:50AM:&#10;At least, the contour is found and extracted... but the image looks ugly... and the program looks messy&#10;two places to improve:&#10;1. the current image id of the same size as the original iamge, how can I make it into a smaller image that just fits the contour&#10;2. the countour seems to be the circumference of a symbol, I need to recover it back to the symbol" />
     <MESSAGE value="2AM:&#10;some idea about symbol segmentation, following progress:&#10;1. contouring should be working fine&#10;2. struggling w/ extracting symbol with contour (instead of the box)&#10;3. currently trying drawContour, only resulted in a mess&#10;... to be updated&#10;&#10;2:50AM:&#10;At least, the contour is found and extracted... but the image looks ugly... and the program looks messy&#10;two places to improve:&#10;1. the current image id of the same size as the original iamge, how can I make it into a smaller image that just fits the contour&#10;2. the countour seems to be the circumference of a symbol, I need to recover it back to the symbol&#10;&#10;3:30AM:&#10;updated saving an image through loop:&#10;&#10;4:50AM:&#10;I'm able to cut out a symbol now... although it look ugly... but some progress is better than no progress&#10;The only problem left: how to make the image of a single symbol pretty..." />
-    <option name="LAST_COMMIT_MESSAGE" value="2AM:&#10;some idea about symbol segmentation, following progress:&#10;1. contouring should be working fine&#10;2. struggling w/ extracting symbol with contour (instead of the box)&#10;3. currently trying drawContour, only resulted in a mess&#10;... to be updated&#10;&#10;2:50AM:&#10;At least, the contour is found and extracted... but the image looks ugly... and the program looks messy&#10;two places to improve:&#10;1. the current image id of the same size as the original iamge, how can I make it into a smaller image that just fits the contour&#10;2. the countour seems to be the circumference of a symbol, I need to recover it back to the symbol&#10;&#10;3:30AM:&#10;updated saving an image through loop:&#10;&#10;4:50AM:&#10;I'm able to cut out a symbol now... although it look ugly... but some progress is better than no progress&#10;The only problem left: how to make the image of a single symbol pretty..." />
+    <MESSAGE value="2AM:&#10;some idea about symbol segmentation, following progress:&#10;1. contouring should be working fine&#10;2. struggling w/ extracting symbol with contour (instead of the box)&#10;3. currently trying drawContour, only resulted in a mess&#10;... to be updated&#10;&#10;2:50AM:&#10;At least, the contour is found and extracted... but the image looks ugly... and the program looks messy&#10;two places to improve:&#10;1. the current image id of the same size as the original iamge, how can I make it into a smaller image that just fits the contour&#10;2. the countour seems to be the circumference of a symbol, I need to recover it back to the symbol&#10;&#10;3:30AM:&#10;updated saving an image through loop:&#10;&#10;4:50AM:&#10;I'm able to cut out a symbol now... although it look ugly... but some progress is better than no progress&#10;The only problem left: how to make the image of a single symbol pretty...&#10;&#10;5:20AM:&#10;I'm done for today..." />
+    <option name="LAST_COMMIT_MESSAGE" value="2AM:&#10;some idea about symbol segmentation, following progress:&#10;1. contouring should be working fine&#10;2. struggling w/ extracting symbol with contour (instead of the box)&#10;3. currently trying drawContour, only resulted in a mess&#10;... to be updated&#10;&#10;2:50AM:&#10;At least, the contour is found and extracted... but the image looks ugly... and the program looks messy&#10;two places to improve:&#10;1. the current image id of the same size as the original iamge, how can I make it into a smaller image that just fits the contour&#10;2. the countour seems to be the circumference of a symbol, I need to recover it back to the symbol&#10;&#10;3:30AM:&#10;updated saving an image through loop:&#10;&#10;4:50AM:&#10;I'm able to cut out a symbol now... although it look ugly... but some progress is better than no progress&#10;The only problem left: how to make the image of a single symbol pretty...&#10;&#10;5:20AM:&#10;I'm done for today..." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1603,8 +1610,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/SymbolSegmentor.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="106">
-          <caret line="48" column="19" lean-forward="true" selection-start-line="48" selection-start-column="19" selection-end-line="48" selection-end-column="19" />
+        <state relative-caret-position="356">
+          <caret line="58" column="17" lean-forward="true" selection-start-line="58" selection-start-column="17" selection-end-line="58" selection-end-column="17" />
           <folding>
             <element signature="e#413#423#0" expanded="true" />
           </folding>
