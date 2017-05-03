@@ -170,9 +170,15 @@ class LocalSymbolData:
         end = self.ind + n
         for num in range(start, end):
             if num < 0:
-                print("The number of left pairs is less than n.")
-                x = np.vstack((x, self.training_imgs[randint(0, self.max_ind - 1)]))
-                y = np.vstack((y, self.labels[randint(0, self.max_ind - 1)]))
+                print("All data has been used, generated randomized data.")
+                temp_new_img = self.training_imgs[randint(0, self.max_ind - 1)]
+                temp_new_label = self.labels[randint(0, self.max_ind - 1)]
+                if x.size == 0:
+                    x = temp_new_img
+                    y = temp_new_label
+                else:
+                    x = np.vstack((x, temp_new_img))
+                    y = np.vstack((y, temp_new_label))
             else:
                 if x.size == 0:
                     x = self.training_imgs[num]
