@@ -149,7 +149,7 @@ def main(_):
     classficationDic = ClassificationDictionary('./annotated')
     localData = LocalHandwrittenSymbolDataset.LocalSymbolData(classficationDic)
     testing_data = SymbolSegmentor.SymbolSegmentor()
-    localData.read('ss')
+    # localData.read('ss')
 
     # DEFINE MODEL
     number_of_classes = classficationDic.get_classes_number()
