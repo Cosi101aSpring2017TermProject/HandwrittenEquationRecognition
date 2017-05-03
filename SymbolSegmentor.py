@@ -14,8 +14,8 @@ class SymbolSegmentor:
     def save_image(mun_tmp, img_tmp):
         string_temp = "test_output_" + str(mun_tmp) + ".png"
         cv2.imwrite(string_temp, img_tmp)
-        plt.imshow(img_tmp)
-        plt.show()
+        # plt.imshow(img_tmp)
+        # plt.show()
 
     # same as in the openCV tutorial
     im_gray = cv2.imread("test_image_for_contour.png", 0)
@@ -35,17 +35,35 @@ class SymbolSegmentor:
     # ctr = ctrs[1]
     # ctr = ctrs[4]
     # im3 = np.zeros((128, 1693, 3), np.uint8)
+    rects = [cv2.boundingRect(ctr) for ctr in ctrs]
+    # zero = 0
     img_num_counter = 0
+    rect_counter = 0
     for contour in ctrs:
         symbol_container = np.zeros((128, 1693, 3), np.uint8)
         cv2.drawContours(symbol_container, contour, -1, (0, 255, 0), 3)
-        save_image(img_num_counter, symbol_container)
+        rect = rects[rect_counter]
+        rect_counter = rect_counter + 1
+        # cv2.rectangle(symbol_container, (rect[0], rect[1]), (rect[0] + rect[2], rect[1] + rect[3]), (0, 255, 0), 3)
+        # print(rect[0])
+        # (rect[1])
+        # print(rect[2])
+        # print(rect[3])
+        vertex_x_begin=rect[0]-10
+        vertex_x_end=rect[0]+ rect[2]+10
+        vertex_y_begin=rect[1]-10
+        vertex_y_end=rect[1]+ rect[3]+10
+
+        crop_img = symbol_container[vertex_y_begin:vertex_y_end, vertex_x_begin:vertex_x_end]
+        plt.imshow(crop_img)
+        plt.show()
+        save_image(img_num_counter, crop_img)
         img_num_counter = img_num_counter + 1
+    # rect_counter = zero
 
 
     # plt.imshow(ctrs)
     # plt.show()
-    rects = [cv2.boundingRect(ctr) for ctr in ctrs]
     for rect in rects:
         cv2.rectangle(im, (rect[0], rect[1]), (rect[0] + rect[2], rect[1] + rect[3]), (0, 255, 0), 3)
     im = 255 - im
