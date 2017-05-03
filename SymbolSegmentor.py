@@ -20,10 +20,20 @@ class SymbolSegmentor:
     ret, im_th = cv2.threshold(im, 127, 255, cv2.THRESH_BINARY_INV)
     # find contour
     im2, ctrs, hier = cv2.findContours(im_th.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    ctr = ctrs[1]
-    im3 = np.zeros((128, 1693, 3), np.uint8)
-    cv2.drawContours(im3, ctrs, 2, (0, 255, 0), 3)
-    cv2.imwrite('test_output_1.png', im3)
+
+    # ctr = ctrs[1]
+    # ctr = ctrs[4]
+    # im3 = np.zeros((128, 1693, 3), np.uint8)
+    a = 0
+    for contour in ctrs:
+        im3 = np.zeros((128, 1693, 3), np.uint8)
+        cv2.drawContours(im3, contour, -1, (0, 255, 0), 3)
+        string_base = "test_output_"
+        string_temp = string_base + str(a) + ".png"
+        a = a+1
+        cv2.imwrite(string_temp, im3)
+        plt.imshow(im3)
+        plt.show()
 
     # plt.imshow(ctrs)
     # plt.show()
