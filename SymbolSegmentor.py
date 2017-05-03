@@ -4,7 +4,7 @@
 #Possibly helpful reference: http://cs229.stanford.edu/proj2013/JimenezNguyen_MathFormulas_final_paper.pdf
 #http://docs.opencv.org/2.4/doc/tutorials/imgproc/shapedescriptors/find_contours/find_contours.html
 #used basic format: https://github.com/zhjch05/cs101-hw4/blob/master/termproject/cvFindContour.py
-
+# why can't I push it
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
