@@ -24,11 +24,20 @@ class SymbolSegmentor:
 
     # convert to grayscale
     im_gray = cv2.GaussianBlur(im_gray, (5, 5), 0)
+    # im_gray2 = cv2.GaussianBlur(im_gray, (5, 5), 0)
+    # im_gray3 = cv2.GaussianBlur(im_gray, (7, 7), 0)
+
     im = 255 - im_gray
+    plt.imshow(im_gray)
+    plt.show()
 
     # threshold
     ret, im_th = cv2.threshold(im, 127, 255, cv2.THRESH_BINARY_INV)
+    # ret2, im_th2 = cv2.threshold(im_th, 127, 255, cv2.THRESH_BINARY_INV)
+    # ret3, im_th3 = cv2.threshold(im_th2, 127, 255, cv2.THRESH_BINARY_INV)
 
+    plt.imshow(im_th)
+    plt.show()
     # find contour, ctrs is the contour
     im2, ctrs, hier = cv2.findContours(im_th.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
@@ -41,7 +50,7 @@ class SymbolSegmentor:
     rect_counter = 0
     for contour in ctrs:
         symbol_container = np.zeros((128, 1693, 3), np.uint8)
-        cv2.drawContours(symbol_container, contour, -1, (0, 255, 0), 6)
+        cv2.drawContours(symbol_container, contour, -1, (0, 255, 0), 3)
         rect = rects[rect_counter]
         rect_counter = rect_counter + 1
         # cv2.rectangle(symbol_container, (rect[0], rect[1]), (rect[0] + rect[2], rect[1] + rect[3]), (0, 255, 0), 3)
@@ -57,11 +66,11 @@ class SymbolSegmentor:
         print(vertex_y_end - vertex_y_begin)
         crop_img = symbol_container[vertex_y_begin:vertex_y_end, vertex_x_begin:vertex_x_end]
         # print()
-        for i in range(0, vertex_x_end-vertex_x_begin):
-            for j in range(0, vertex_y_end - vertex_y_begin):
-                int_tmp = cv2.pointPolygonTest(contour, (i,j), False)
-                if int_tmp == 0:
-                    crop_img[j][i] = (0, 255, 0)
+        # for i in range(0, vertex_x_end-vertex_x_begin):
+        #    for j in range(0, vertex_y_end - vertex_y_begin):
+        #        int_tmp = cv2.pointPolygonTest(contour, (i,j), False)
+        #        if int_tmp == 0:
+        #            crop_img[j][i] = (0, 255, 0)
         plt.imshow(crop_img)
         plt.show()
         save_image(img_num_counter, crop_img)
