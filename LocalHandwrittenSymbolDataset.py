@@ -171,8 +171,9 @@ class LocalSymbolData:
         for num in range(start, end):
             if num < 0:
                 print("All data has been used, generated randomized data.")
-                temp_new_img = self.training_imgs[randint(0, self.max_ind - 1)]
-                temp_new_label = self.labels[randint(0, self.max_ind - 1)]
+                ran_index = randint(0, self.max_ind - 1)
+                temp_new_img = self.training_imgs[ran_index]
+                temp_new_label = self.labels[ran_index]
                 if x.size == 0:
                     x = temp_new_img
                     y = temp_new_label
