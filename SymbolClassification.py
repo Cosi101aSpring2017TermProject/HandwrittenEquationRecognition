@@ -11,6 +11,7 @@ import sys
 import numpy
 # import matplotlib.pyplot as plt
 from tensorflow.examples.tutorials.mnist import input_data
+from shutil import copyfile
 
 do_restore = 0
 
@@ -28,8 +29,8 @@ class ClassificationDictionary:
         for f in files:
             a = f.split("_")
             if len(a) == 8:
-                print(f)
-                print(a[3])
+                # print(f)
+                # print(a[3])
                 classification.add(a[3])
         sorted_classification = numpy.array(sorted(classification))
         print("xxx")
@@ -147,8 +148,9 @@ def rot(raw_image, scale):
 def main(_):
 
     classficationDic = ClassificationDictionary('./annotated')
-    localData = LocalHandwrittenSymbolDataset.LocalSymbolData(classficationDic)
     testing_data = SymbolSegmentor.SymbolSegmentor()
+    localData = LocalHandwrittenSymbolDataset.LocalSymbolData(classficationDic)
+
     # localData.read('ss')
 
     # DEFINE MODEL
@@ -199,11 +201,14 @@ def main(_):
 
     sess.run(tf.global_variables_initializer())
     saver = tf.train.Saver()  # save training
-    #TODO: TRAIN
+    # TRAIN
     if do_restore == 0:
+        # MARK: restore previously trained model
         saver.restore(sess, './model')
+        print("Restored previously trained model,")
+        print("to train again, change the do_restore integer in SymbolClassification to 1.")
     else:
-        # Train
+        # MARK: Train
         number_steps = 150
         batch_number = 50  # size of data pairs being trained each step
         # log_txt = open('log.txt', 'w')
@@ -259,6 +264,25 @@ def main(_):
         save_path = saver.save(sess, './model')  # save model
         print("Model saved in file: %s" % save_path)
     # TODO: TEST
+    test_data = localData.read('./symbols')
+    print(test_data)
+    feed_dict = {x: test_data[0], keep_prob: 1.0}
+    p = results.eval(feed_dict=feed_dict)
+    print(p)
+    print("len(p):")
+    print(len(p))
+    if len(p) == len(test_data[1]):
+        print('output the classified symbols to result folder')
+        log_txt = open('results.txt', 'w')
+        for i in range(0, len(p)):
+            new_filename = str(test_data[1][i]).replace("unclassified", p[i])
+            copyfile("symbols/"+test_data[1][i], "results/"+new_filename)
+            log_txt.write(new_filename)
+        log_txt.close()
+        print("All results have been saved, the labels are on the file names")
+        print("All file names are listed in results.txt in root folder of the source code")
+    print("Classification finished.")
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

@@ -17,10 +17,24 @@ class SymbolSegmentor:
 
     show_imgs = False
 
-    def save_image(self, img_filename, img_tmp):
-        print("save " + img_filename)
-        os.chdir('symbols')
-        # skimage.io.imsave(img_filename, img_tmp/255)
+    def get_folder(self, full_dir: str):
+        print(os.sep)
+        dir_component = full_dir.split(os.sep)
+        print(dir_component[len(dir_component) - 1])
+        return dir_component[len(dir_component) - 1]
+
+    def save_image(self, folder, img_filename, postfix, img_tmp):
+        # full_filename = img_filename.replace('.png', postfix + '.png')
+        # full_path = os.path.join('\symbols', full_filename)
+        # if folder != self.get_folder(os.getcwd()):
+        #     if not os.path.exists(os.getcwd() + os.sep + folder):
+        #         os.makedirs(os.getcwd() + os.sep + folder)
+        #     os.chdir(folder)
+        # print("save " + full_filename + '\nat ' + os.getcwd())
+        if not os.path.exists(folder):
+            os.makedirs(folder)
+        # dir_new = folder + '/' + full_filename
+        # skimage.io.imsave(os.getcwd()+'/'+folder+'/'+img_filename, img_tmp)
         cv2.imwrite(img_filename, img_tmp)
         # plt.imshow(img_tmp)
         # plt.show()
@@ -76,8 +90,8 @@ class SymbolSegmentor:
             vertex_x_end = rect[0] + rect[2] + 10
             vertex_y_begin = rect[1] - 10
             vertex_y_end = rect[1] + rect[3] + 10
-            print(vertex_x_end - vertex_x_begin)
-            print(vertex_y_end - vertex_y_begin)
+            # print(vertex_x_end - vertex_x_begin)
+            # print(vertex_y_end - vertex_y_begin)
             crop_img = symbol_container[vertex_y_begin:vertex_y_end, vertex_x_begin:vertex_x_end]
             # print()
             # for i in range(0, vertex_x_end-vertex_x_begin):
@@ -88,8 +102,10 @@ class SymbolSegmentor:
             if self.show_imgs:
                 plt.imshow(crop_img)
                 plt.show()
+            # print(crop_img[0])
+            # print(im_gray[0])
             rec_string = str(vertex_y_begin)+'_'+str(vertex_y_end)+'_'+str(vertex_x_begin)+'_'+str(vertex_x_end)
-            self.save_image(file_name.replace('.png', '_??_'+rec_string+'.png'), crop_img)
+            cv2.imwrite("symbols/" + file_name.replace('.png', '_unclassified_'+rec_string+'.png'), cv2.cvtColor(crop_img, cv2.COLOR_BGR2GRAY))
             img_num_counter = img_num_counter + 1
             # rect_counter = zero
             # plt.imshow(ctrs)
@@ -101,12 +117,16 @@ class SymbolSegmentor:
         # plt.imshow(im)
         # plt.show()
 
+
+
+
+
     def __init__(self):
         print("start segmenting equation pics in annotated folder")
         files = [f for f in listdir('./annotated')]
+
         for f in files:
             a = f.split("_")
             if len(a) == 3:
                 print(f)
                 self.segment('./annotated/', f)
-
