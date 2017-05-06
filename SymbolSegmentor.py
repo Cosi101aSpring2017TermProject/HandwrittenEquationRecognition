@@ -105,7 +105,11 @@ class SymbolSegmentor:
             # print(crop_img[0])
             # print(im_gray[0])
             rec_string = str(vertex_y_begin)+'_'+str(vertex_y_end)+'_'+str(vertex_x_begin)+'_'+str(vertex_x_end)
+            # MARK: IO
+            if not os.path.exists("symbols"):
+                os.makedirs("symbols")
             cv2.imwrite("symbols/" + file_name.replace('.png', '_unclassified_'+rec_string+'.png'), cv2.cvtColor(crop_img, cv2.COLOR_BGR2GRAY))
+            # MARK: IO
             img_num_counter = img_num_counter + 1
             # rect_counter = zero
             # plt.imshow(ctrs)

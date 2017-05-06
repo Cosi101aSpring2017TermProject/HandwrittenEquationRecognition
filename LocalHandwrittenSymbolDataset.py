@@ -71,8 +71,6 @@ class LocalSymbolData:
         # print(self.classificationDic.get_classification_array("y"))
         # eg. we have a b c, 3 symbols. Calling get_classification_array("b") will return [0, 1, 0]
 
-        # TODO: READ ALL PICTURES OF SYMBOLS FROM FOLDER /annotated
-        # TODO: CONVERT ALL IMGS TO 28*28 AND PLATTEN THEM to 1*784 like PA4, PUT ALL LABELS IN self.labels
         # for given index images in self.training_imgs should match with the label in self.label
 
     # def img_process(im):
@@ -147,7 +145,7 @@ class LocalSymbolData:
                 x = np.vstack((x, img))
                 y = np.vstack((y, f))
         # print([x,y])
-        return [x,y]
+        return [x, y]
 
 
 

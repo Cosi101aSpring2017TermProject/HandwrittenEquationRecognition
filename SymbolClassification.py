@@ -1,15 +1,11 @@
 import LocalHandwrittenSymbolDataset
 import SymbolSegmentor
 from os import listdir
-import skimage
-import skimage.util
-import skimage.transform
-from skimage import exposure
 import tensorflow as tf
 import argparse
 import sys
 import numpy
-# import matplotlib.pyplot as plt
+import os
 from tensorflow.examples.tutorials.mnist import input_data
 from shutil import copyfile
 
@@ -271,6 +267,11 @@ def main(_):
     print(p)
     print("len(p):")
     print(len(p))
+    # IO
+    if not os.path.exists("results"):
+        os.makedirs("results")
+    if not os.path.exists("symbols"):
+        os.makedirs("symbols")
     if len(p) == len(test_data[1]):
         print('output the classified symbols to result folder')
         log_txt = open('results.txt', 'w')
