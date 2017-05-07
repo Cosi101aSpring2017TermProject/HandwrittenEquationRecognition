@@ -268,6 +268,7 @@ def main(_):
     print("len(p):")
     print(len(p))
     # IO
+    result_dict = dict()
     if not os.path.exists("results"):
         os.makedirs("results")
     if not os.path.exists("symbols"):
@@ -279,10 +280,26 @@ def main(_):
             new_filename = str(test_data[1][i]).replace("unclassified", p[i])
             copyfile("symbols/"+test_data[1][i], "results/"+new_filename)
             log_txt.write(new_filename)
+            components = new_filename.split("_")
+            if len(components) == 8:
+                equation_filename = components[0]+"_"+components[1]+"_"+components[2]+".png"
+                symbol = components[3]+"\t"+components[6]+"\t"+components[4]+"\t"+components[7]+"\t"+components[5]+"\n"
+                if equation_filename in result_dict:
+                    result_dict[equation_filename] += symbol
+                else:
+                    result_dict[equation_filename] = symbol
         log_txt.close()
         print("All results have been saved, the labels are on the file names")
         print("All file names are listed in results.txt in root folder of the source code")
     print("Classification finished.")
+    # MARK: OUTPUT TO FORMAT THAT predict.py CAN READ
+    prediction_txt = open('predictions', 'w')
+    for key in result_dict:
+        symbols = str(result_dict[key]).split("\n")
+        prediction_txt.write(key+"\t"+str(len(symbols))+"\n")
+        prediction_txt.write(str(result_dict[key]))
+    prediction_txt.close()
+
 
 
 if __name__ == '__main__':
