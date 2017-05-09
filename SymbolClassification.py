@@ -11,9 +11,11 @@ from shutil import copyfile
 
 do_restore = 0
 
+
 class ClassificationDictionary:
 
     classification_dict = dict()
+
 
     def __init__(self, training_dir: str):
         # './annotated'
@@ -28,14 +30,13 @@ class ClassificationDictionary:
                 # print(f)
                 # print(a[3])
                 classification.add(a[3])
-        sorted_classification = numpy.array(sorted(classification))
+        self.sorted_classification = numpy.array(sorted(classification))
         print("xxx")
-        print(sorted_classification)
+        print(self.sorted_classification)
         print("there are %d kinds of symbols" % len(classification))
 
         for i in range(0, len(classification)):
-            self.classification_dict[sorted_classification[i]] = i
-
+            self.classification_dict[self.sorted_classification[i]] = i
         print(self.classification_dict)
 
     def get_classification_array(self, symbol):
@@ -54,6 +55,15 @@ class ClassificationDictionary:
 
     def get_classes_number(self):
         return len(self.classification_dict)
+
+    def get_symbol(self, index):
+        # if index < 0:
+        #     print("index is lower than zero: "+str(index))
+        #     return "unknown"
+        # if index > len(self.sorted_classification)-1:
+        #     print("index out of bound: "+str(index))
+        #     return "unknown"
+        return self.sorted_classification[index]
 
     def convert_mnist(self, mnist_class_array):
         i = 0
@@ -276,9 +286,15 @@ def main(_):
     if len(p) == len(test_data[1]):
         print('output the classified symbols to result folder')
         log_txt = open('results.txt', 'w')
+        # print(test_data[1])
+        # print(p)
         for i in range(0, len(p)):
-            new_filename = str(test_data[1][i]).replace("unclassified", p[i])
-            copyfile("symbols/"+test_data[1][i], "results/"+new_filename)
+            current_filename = test_data[1][i][0]
+            classified_symbol = classficationDic.get_symbol(p[i])
+            print(current_filename)
+            print("classification: "+classified_symbol+"\n")
+            new_filename = current_filename.replace("unclassified", classified_symbol)
+            copyfile("symbols/"+current_filename, "results/"+new_filename)
             log_txt.write(new_filename)
             components = new_filename.split("_")
             if len(components) == 8:
@@ -293,7 +309,7 @@ def main(_):
         print("All file names are listed in results.txt in root folder of the source code")
     print("Classification finished.")
     # MARK: OUTPUT TO FORMAT THAT predict.py CAN READ
-    prediction_txt = open('predictions', 'w')
+    prediction_txt = open('predictions.txt', 'w')
     for key in result_dict:
         symbols = str(result_dict[key]).split("\n")
         prediction_txt.write(key+"\t"+str(len(symbols))+"\n")

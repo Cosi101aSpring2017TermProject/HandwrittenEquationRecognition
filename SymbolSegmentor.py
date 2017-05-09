@@ -18,6 +18,7 @@ import numpy
 class SymbolSegmentor:
 
     show_imgs = False
+    loading_imgs = False
     ignored_pixel_limit = 20
 
     def get_folder(self, full_dir: str):
@@ -230,12 +231,15 @@ class SymbolSegmentor:
                 os.remove(path_name+"/"+previously_saved_symbol)
 
     def __init__(self):
-        print("start segmenting equation pics in annotated folder")
-        files = [f for f in listdir('./annotated')]
-        self.clear("boxed")
-        self.clear("symbols")
-        for f in files:
-            a = f.split("_")
-            if len(a) == 3:
-                print(f)
-                self.segment('./annotated/', f)
+        if self.loading_imgs:
+            print("start segmenting equation pics in annotated folder")
+            files = [f for f in listdir('./annotated')]
+            self.clear("boxed")
+            self.clear("symbols")
+            for f in files:
+                a = f.split("_")
+                if len(a) == 3:
+                    print(f)
+                    self.segment('./annotated/', f)
+        else:
+            print("segmenting done, start classification directly")
