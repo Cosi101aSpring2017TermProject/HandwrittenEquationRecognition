@@ -6,20 +6,23 @@
 #used basic format: https://github.com/zhjch05/cs101-hw4/blob/master/termproject/cvFindContour.py
 # why can't I push it
 import cv2
-import numpy as np
 import matplotlib.pyplot as plt
 from os import listdir
 import os
 import skimage.measure
 import skimage.io
-import re
 import numpy
 
 class SymbolSegmentor:
 
     show_imgs = False
+    # For debugging, set to true will show all the steps of image processing
     loading_imgs = False
-    ignored_pixel_limit = 20
+    # Do you want to do the segmentation of each input, it might take some time.
+    # If you run this the first time, or want to read from other place, set to True
+
+    ignored_pixel_limit = 60
+    # if the area of clipped symbol is lower than this number, we think it's probably a noise, ignore
 
     def get_folder(self, full_dir: str):
         print(os.sep)
@@ -52,13 +55,9 @@ class SymbolSegmentor:
                         y2 = y
 
         trimmed_image = two_d_array_img[y1:y2, x1:x2]
-        # if self.show_imgs:
-        #     print(trimmed_image)
-        #     print("x1:%d y1:%d x2:%d y2:%d" % (x1, y1, x2, y2))
-        #     plt.imshow(trimmed_image)
-        #     plt.show()
         return x1, y1, x2, y2, trimmed_image
 
+    # where all the segmentation happens
     def segment(self, img_folder_dir, file_name):
         full_dir = img_folder_dir + file_name
         im_gray = cv2.imread(full_dir, 0)
@@ -69,8 +68,7 @@ class SymbolSegmentor:
             plt.title("raw image: "+file_name)
             plt.show()
 
-
-        # convert to grayscale
+        #  blur the image a little bit
         im_gray = cv2.blur(im_gray, (3, 3), 2)
 
         im = 255 - im_gray
@@ -83,9 +81,8 @@ class SymbolSegmentor:
         # threshold
         ret, im_th = cv2.threshold(im, 200, 255, cv2.THRESH_BINARY_INV)
 
-
-        # find contour, ctrs is the contour
-        # im2, ctrs, hier = cv2.findContours(im_gray.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE) #openCV
+        # Find the connected region with skimage.measure.label
+        # This function will set all each connected region to the same value, each region has a unique value
         connected_regions, num_of_labels = skimage.measure.label(im_th, connectivity=5, neighbors=8, background=0, return_num=True)
         print(str(num_of_labels)+" regions found in "+file_name)
 
@@ -112,10 +109,10 @@ class SymbolSegmentor:
             saved_name = "symbols/" + file_name.replace('.png', '_unclassified_' + rec_string + '.png')
 
             # MARK: Double check to see if there are inner image of the given region
+            # This is to deal with the square root
             trimmed_img = im_th[y1:y2, x1:x2]
             inners, numer_of_inner = skimage.measure.label(trimmed_img, connectivity=5,
                                                            neighbors=8, background=0, return_num=True)
-
             if numer_of_inner == 1:
                 if (y2-y1)*(x2-x1) > self.ignored_pixel_limit:
                     if self.show_imgs:
@@ -175,50 +172,6 @@ class SymbolSegmentor:
             plt.title(boxed_img_path)
             plt.show()
         cv2.imwrite(boxed_img_path, img_with_box)
-
-
-
-
-        # rects = [cv2.boundingRect(ctr) for ctr in ctrs]
-        # # zero = 0
-        # img_num_counter = 0
-        # rect_counter = 0
-        # for contour in ctrs:
-        #     symbol_container = np.zeros((128, 1693, 3), np.uint8)
-        #     cv2.drawContours(symbol_container, contour, -1, (0, 255, 0), 3)
-        #     rect = rects[rect_counter]
-        #     rect_counter = rect_counter + 1
-        #     # cv2.rectangle(symbol_container, (rect[0], rect[1]), (rect[0] + rect[2], rect[1] + rect[3]), (0, 255, 0), 3)
-        #     vertex_x_begin = rect[0]
-        #     vertex_x_end = rect[0] + rect[2]
-        #     vertex_y_begin = rect[1]
-        #     vertex_y_end = rect[1] + rect[3]
-        #     crop_img = symbol_container[vertex_y_begin:vertex_y_end, vertex_x_begin:vertex_x_end]
-        #     # print()
-        #     # for i in range(0, vertex_x_end-vertex_x_begin):
-        #     #    for j in range(0, vertex_y_end - vertex_y_begin):
-        #     #        int_tmp = cv2.pointPolygonTest(contour, (i,j), False)
-        #     #        if int_tmp == 0:
-        #     #            crop_img[j][i] = (0, 255, 0)
-        #     if self.show_imgs:
-        #         plt.imshow(crop_img)
-        #         plt.show()
-        #     # print(crop_img[0])
-        #     # print(im_gray[0])
-        #     rec_string = str(vertex_y_begin)+'_'+str(vertex_y_end)+'_'+str(vertex_x_begin)+'_'+str(vertex_x_end)
-        #     if not os.path.exists("symbols"):
-        #         os.makedirs("symbols")
-        #     cv2.imwrite("symbols/" + file_name.replace('.png', '_unclassified_'+rec_string+'.png'), cv2.cvtColor(crop_img, cv2.COLOR_BGR2GRAY))
-        #     img_num_counter = img_num_counter + 1
-        #     # rect_counter = zero
-        #     # plt.imshow(ctrs)
-        #     # plt.show()
-        #
-        # for rect in rects:
-        #     cv2.rectangle(im, (rect[0], rect[1]), (rect[0] + rect[2], rect[1] + rect[3]), (0, 255, 0), 3)
-        # im = 255 - im
-        # # plt.imshow(im)
-        # # plt.show()
 
     @staticmethod
     def clear(folder_name):  # delete all files in given dir, if the dir does not exist, create it

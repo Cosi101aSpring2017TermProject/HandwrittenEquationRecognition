@@ -299,7 +299,8 @@ def main(_):
             components = new_filename.split("_")
             if len(components) == 8:
                 equation_filename = components[0]+"_"+components[1]+"_"+components[2]+".png"
-                symbol = components[3]+"\t"+components[6]+"\t"+components[4]+"\t"+components[7]+"\t"+components[5]+"\n"
+                symbol = components[3]+"\t"+components[6]+"\t"+components[4]+"\t"\
+                    + components[7].replace(".png", "")+"\t"+components[5]+"\n"
                 if equation_filename in result_dict:
                     result_dict[equation_filename] += symbol
                 else:
@@ -312,7 +313,7 @@ def main(_):
     prediction_txt = open('predictions.txt', 'w')
     for key in result_dict:
         symbols = str(result_dict[key]).split("\n")
-        prediction_txt.write(key+"\t"+str(len(symbols))+"\n")
+        prediction_txt.write(key+"\t"+str(len(symbols)-1)+"\n")
         prediction_txt.write(str(result_dict[key]))
     prediction_txt.close()
 
