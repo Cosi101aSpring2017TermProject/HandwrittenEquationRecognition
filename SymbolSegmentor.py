@@ -17,11 +17,11 @@ class SymbolSegmentor:
 
     show_imgs = False
     # For debugging, set to true will show all the steps of image processing
-    loading_imgs = False
+    loading_imgs = True
     # Do you want to do the segmentation of each input, it might take some time.
     # If you run this the first time, or want to read from other place, set to True
 
-    ignored_pixel_limit = 60
+    ignored_pixel_limit = 80
     # if the area of clipped symbol is lower than this number, we think it's probably a noise, ignore
 
     def get_folder(self, full_dir: str):
@@ -56,6 +56,34 @@ class SymbolSegmentor:
 
         trimmed_image = two_d_array_img[y1:y2, x1:x2]
         return x1, y1, x2, y2, trimmed_image
+
+    def check_if_equal_signs(self, prev_file_name, y1, y2, x1, x2, new_img):
+        file_name_comps = prev_file_name.split("_")
+        y1_prev = file_name_comps[4]
+        y2_prev = file_name_comps[5]
+        x1_prev = file_name_comps[6]
+        x2_prev = file_name_comps[7].replace(".png", "")
+        x_length = int(x2_prev) - int(x1_prev)
+        y_length = int(y2_prev) - int(y1_prev)
+        range_x = (x1_prev-x_length, x2_prev+x_length)
+        if (range_x[0] < x1) + (range_x[1]>x2):
+            range_y = (y1_prev-x_length, y2_prev+x_length)
+            if (range_y[0] < y1) + (range_y[1]>y2):
+                if ((2*y_length) > (y2-y1))+((0.5*y_length) < (y2-y1)):
+                    print("A equal sign has ben found")
+                    if self.show_imgs:
+                        plt.imshow(new_img)
+                        plt.title("new image, can be combined with "+prev_file_name )
+                        plt.show()
+                    print(prev_file_name)
+                    return True
+                else:
+                    return False
+            else:
+                return False
+        else:
+            return False
+
 
     # where all the segmentation happens
     def segment(self, img_folder_dir, file_name):
@@ -94,6 +122,7 @@ class SymbolSegmentor:
             plt.imshow(connected_regions)
             plt.title(str(num_of_labels)+" connected regions")
             plt.show()
+        possible_eq_sign = ""
         for i in range(1, num_of_labels + 1):
             testimage = (connected_regions == i) * 200
             if self.show_imgs:
@@ -101,12 +130,21 @@ class SymbolSegmentor:
                 plt.title("symbol "+str(i))
                 plt.show()
             x1, y1, x2, y2, symbol_img = self.trimZeros(testimage)
+
             cv2.rectangle(img_with_box, (x1, y1), (x2, y2), (255, 0, 0), 1)
             rec_string = str(y1) + '_' + str(y2) + '_' + str(x1) + '_' + str(x2)
             # MARK: IO
             if not os.path.exists("symbols"):
                 os.makedirs("symbols")
             saved_name = "symbols/" + file_name.replace('.png', '_unclassified_' + rec_string + '.png')
+
+            # # MARK: DETECT EQUAL SIGN
+            # if (8.0 > float((x2-x1)/(y2-y1))) + (float((x2-x1)/(y2-y1)) > 3.0):
+            #     if possible_eq_sign == "":
+            #         possible_eq_sign = saved_name
+            #     else:
+            #         if self.check_if_equal_signs(possible_eq_sign,y1,y2,x1,x2,symbol_img):
+            #             # combine two images
 
             # MARK: Double check to see if there are inner image of the given region
             # This is to deal with the square root
@@ -185,8 +223,10 @@ class SymbolSegmentor:
 
     def __init__(self):
         if self.loading_imgs:
-            print("start segmenting equation pics in annotated folder")
-            files = [f for f in listdir('./annotated')]
+            print("start segmenting and classifying equation pics in target folder")
+            print("result will be listed in predictions.txt")
+            print("")
+            files = [f for f in listdir('./target')]
             self.clear("boxed")
             self.clear("symbols")
             for f in files:
